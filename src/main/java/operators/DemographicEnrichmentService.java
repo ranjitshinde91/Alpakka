@@ -5,12 +5,13 @@ import akka.japi.function.Function;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import model.AccountCreationObject;
 import model.DemoGraphicInformationMessage;
+import model.MemberMessage;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
 
-public class DemographicEnrichmentService implements Function<AccountCreationObject, DemoGraphicInformationMessage> {
+public class DemographicEnrichmentService implements Function<MemberMessage, DemoGraphicInformationMessage> {
 
     private ObjectMapper objectMapper;
     private String url = "https://jbxgn47x88.execute-api.ap-south-1.amazonaws.com/dev/getdemographics";
@@ -23,7 +24,7 @@ public class DemographicEnrichmentService implements Function<AccountCreationObj
 
 
     @Override
-    public DemoGraphicInformationMessage apply(AccountCreationObject param) throws Exception {
+    public DemoGraphicInformationMessage apply(MemberMessage param) throws Exception {
 
        try {
 
