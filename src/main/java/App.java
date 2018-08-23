@@ -1,25 +1,18 @@
 import akka.actor.ActorSystem;
-import akka.japi.function.Function2;
 import akka.kafka.ConsumerSettings;
 import akka.kafka.Subscriptions;
 import akka.kafka.javadsl.Consumer;
-import akka.kafka.javadsl.Transactional;
 import akka.stream.ActorMaterializer;
 import akka.stream.Materializer;
 import akka.stream.javadsl.Sink;
-import akka.stream.javadsl.Source;
 import com.typesafe.config.Config;
-import model.DemoGraphicInformationMessage;
 import operators.*;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
-import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.common.Metric;
 import org.apache.kafka.common.MetricName;
 import org.apache.kafka.common.serialization.ByteArrayDeserializer;
 import org.apache.kafka.common.serialization.StringDeserializer;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletionStage;
 
