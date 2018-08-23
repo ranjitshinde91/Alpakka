@@ -59,6 +59,7 @@ public class ErrorHandling {
 
     @Test
     public void testExponentialBackoff() throws InterruptedException {
+
         Source<ServerSentEvent, NotUsed> eventStream = RestartSource.withBackoff(
                 Duration.ofSeconds(3), // min backoff
                 Duration.ofSeconds(30), // max backoff
