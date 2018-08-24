@@ -1,4 +1,6 @@
+import akka.actor.ActorRef;
 import akka.actor.ActorSystem;
+import akka.actor.DeadLetter;
 import akka.event.Logging;
 import akka.event.LoggingAdapter;
 import akka.kafka.ConsumerSettings;
@@ -9,6 +11,7 @@ import akka.stream.Materializer;
 import akka.stream.javadsl.Sink;
 import akka.stream.javadsl.Source;
 import com.typesafe.config.Config;
+import logging.DeadLetterMonitorActor;
 import operators.*;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
@@ -49,12 +52,16 @@ public class App {
 
         logger.info("starting streaming application");
 
+        ActorRef monitor = system.actorOf(DeadLetterMonitorActor.props());
+
+        system.eventStream().subscribe(monitor, DeadLetter.class);
+
         final Materializer materializer = ActorMaterializer.create(system);
 
         final ConsumerSettings<String, byte[]> consumerSettings = getKafkaConsumerSettings(system);
 
         Source<ConsumerRecord<String, byte[]>, Consumer.Control> source = Consumer
-                .atMostOnceSource(consumerSettings, Subscriptions.topics("test2"));
+                .atMostOnceSource(consumerSettings, Subscriptions.topics("test4"));
 
         source.log("custom", logger);
 
@@ -77,7 +84,7 @@ public class App {
         final Config config = system.settings().config().getConfig("akka.kafka.consumer");
         return ConsumerSettings.create(config, new StringDeserializer(), new ByteArrayDeserializer())
                 .withBootstrapServers("localhost:9092")
-                .withGroupId("group1")
+                .withGroupId("group5")
                 .withProperty(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
     }
 }

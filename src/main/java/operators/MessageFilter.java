@@ -1,6 +1,7 @@
 package operators;
 
 
+import akka.event.Logging;
 import akka.japi.function.Predicate;
 import model.AccountCreationObject;
 import org.slf4j.Logger;
@@ -11,11 +12,10 @@ import java.util.Objects;
 
 public class MessageFilter implements Predicate<String> {
 
-    Logger logger = LoggerFactory.getLogger(AccountCreationObject.class);
 
     @Override
     public boolean test(String message) {
-        logger.info("Filtering message "+message);
+        System.out.println("Filtering message "+message);
         if(Objects.isNull(message) || "".equals(message)){
             return false;
         }

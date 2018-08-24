@@ -31,53 +31,53 @@ public class TestHttp {
     JsonEntityStreamingSupport support = EntityStreamingSupport.json();
 
 
-    @Test
-    public void restApiCall() throws ExecutionException, InterruptedException {
-
-        final CompletionStage<HttpResponse> responseFuture =
-                Http.get(system)
-                        .singleRequest(HttpRequest.create("https://jbxgn47x88.execute-api.ap-south-1.amazonaws.com/dev/getdemographics"));
-
-
-
-        Source<Source<CompletionStage<DemoGraphicInformationMessage>, Object>, NotUsed> source = Source.fromCompletionStage(responseFuture)
-                .map(response -> response.entity().getDataBytes())
-                .map(entity -> {
-                    return entity.via(support.framingDecoder())
-                            .map(bs -> {
-                                CompletionStage<DemoGraphicInformationMessage> value = unmarshal.unmarshal(bs, materializer);
-                                return value;
-                            });
-
-                });
-
-
-        source.runForeach(element->System.out.println(element), materializer);
+//    @Test
+//    public void restApiCall() throws ExecutionException, InterruptedException {
+//
+//        final CompletionStage<HttpResponse> responseFuture =
+//                Http.get(system)
+//                        .singleRequest(HttpRequest.create("https://jbxgn47x88.execute-api.ap-south-1.amazonaws.com/dev/getdemographics"));
+//
+//
+//
+//        Source<Source<CompletionStage<DemoGraphicInformationMessage>, Object>, NotUsed> source = Source.fromCompletionStage(responseFuture)
+//                .map(response -> response.entity().getDataBytes())
+//                .map(entity -> {
+//                    return entity.via(support.framingDecoder())
+//                            .map(bs -> {
+//                                CompletionStage<DemoGraphicInformationMessage> value = unmarshal.unmarshal(bs, materializer);
+//                                return value;
+//                            });
+//
+//                });
+//
+//
+//        source.runForeach(element->System.out.println(element), materializer);
 
 
 //        System.out.println(responseFuture.toCompletableFuture().get().entity().getDataBytes());
 
-        sleep(10000);
-    }
+  //      sleep(10000);
+   // }
 
 
-    @Test
+//    @Test
 
-    public void testCompletionSource() throws InterruptedException {
-        Source<Integer, NotUsed> source = Source.from(Arrays.asList(1, 2, 3, 4, 5));
-
-        final CompletionStage<HttpResponse> responseFuture =
-                Http.get(system)
-                        .singleRequest(HttpRequest.create("https://jbxgn47x88.execute-api.ap-south-1.amazonaws.com/dev/getdemographics"));
-
-
-        CompletionStage<ResponseEntity> entity = responseFuture.thenApply(s -> { // 1
-            System.out.println(currentThread().getName() + "." + s.entity());
-            return s.entity();
-        });
-
-
-
-        sleep(1000);
-    }
+//    public void testCompletionSource() throws InterruptedException {
+//        Source<Integer, NotUsed> source = Source.from(Arrays.asList(1, 2, 3, 4, 5));
+//
+//        final CompletionStage<HttpResponse> responseFuture =
+//                Http.get(system)
+//                        .singleRequest(HttpRequest.create("https://jbxgn47x88.execute-api.ap-south-1.amazonaws.com/dev/getdemographics"));
+//
+//
+//        CompletionStage<ResponseEntity> entity = responseFuture.thenApply(s -> { // 1
+//            System.out.println(currentThread().getName() + "." + s.entity());
+//            return s.entity();
+//        });
+//
+//
+//
+//        sleep(1000);
+//    }
 }

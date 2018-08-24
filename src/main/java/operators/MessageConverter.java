@@ -1,13 +1,14 @@
 package operators;
 
+import akka.japi.Option;
 import akka.japi.function.Function;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import model.AccountCreationObject;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
+import java.util.Optional;
+
 
 public class MessageConverter implements Function<String, AccountCreationObject> {
-    Logger logger = LoggerFactory.getLogger(AccountCreationObject.class);
 
     private transient ObjectMapper objectMapper;
 
@@ -17,12 +18,7 @@ public class MessageConverter implements Function<String, AccountCreationObject>
 
     @Override
     public AccountCreationObject apply(String message) throws Exception {
-        try{
-            return this.objectMapper.readValue(message, AccountCreationObject.class);
-        }
-       catch (Exception e){
-            logger.error("Error converting message "+e.getMessage());
-       }
-       return null;
+       return this.objectMapper.readValue(message, AccountCreationObject.class);
+
     }
 }
