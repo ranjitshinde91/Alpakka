@@ -1,13 +1,17 @@
 import akka.actor.ActorSystem;
+import akka.event.Logging;
+import akka.event.LoggingAdapter;
 import akka.kafka.ConsumerSettings;
 import akka.kafka.Subscriptions;
 import akka.kafka.javadsl.Consumer;
 import akka.stream.ActorMaterializer;
 import akka.stream.Materializer;
 import akka.stream.javadsl.Sink;
+import akka.stream.javadsl.Source;
 import com.typesafe.config.Config;
 import operators.*;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
+import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.common.Metric;
 import org.apache.kafka.common.MetricName;
 import org.apache.kafka.common.serialization.ByteArrayDeserializer;
@@ -24,6 +28,8 @@ public class App {
     private MessageSplitter messageSplitter;
     private PayloadGenerator payloadGenerator;
 
+    private LoggingAdapter logger;
+
     public App() {
       this.messageFilter  = new MessageFilter();
       this.messageConverter   = new MessageConverter();
@@ -39,13 +45,20 @@ public class App {
     private void run(){
         final ActorSystem system = ActorSystem.create("QuickStart");
 
+        logger =  Logging.getLogger(system, "customLogger");
+
+        logger.info("starting streaming application");
+
         final Materializer materializer = ActorMaterializer.create(system);
 
         final ConsumerSettings<String, byte[]> consumerSettings = getKafkaConsumerSettings(system);
 
-        Consumer.Control control = Consumer
-                                        .atMostOnceSource(consumerSettings, Subscriptions.topics("test2"))
-                                        .map(message->new String(message.value()))
+        Source<ConsumerRecord<String, byte[]>, Consumer.Control> source = Consumer
+                .atMostOnceSource(consumerSettings, Subscriptions.topics("test2"));
+
+        source.log("custom", logger);
+
+        source .map(message->new String(message.value()))
                                         .filter(this.messageFilter)
                                         .map(this.messageConverter)
                                         .splitWhen(a -> true)
@@ -54,12 +67,8 @@ public class App {
                                             .reduce(this.payloadGenerator)
                                          .mergeSubstreams()
                                        // .collect(collectMessage)
-                                        .to(Sink.foreach(it -> System.out.println("Done with " + it)))
+                                        .to(Sink.foreach(it -> logger.info("Done with " + it)))
                                         .run(materializer);
-
-        CompletionStage<Map<MetricName, Metric>> metrics = control.getMetrics();
-        metrics.thenAccept(map -> System.out.println("Metrics: " + map));
-
 
     }
 

@@ -25,7 +25,9 @@ import java.io.IOException;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 public class Operators {
@@ -113,14 +115,12 @@ public class Operators {
 
     @Test
     public  void testThrottle() throws InterruptedException {
-
-        System.out.println("current Thread "+ Thread.currentThread().getId());
         Source.from(Arrays.asList(1, 2, 3, 4, 5, 6, 7, 8, 9, 10))
                 .throttle(1, Duration.ofSeconds(1))
                 .map(element -> {System.out.println(element + "-"+Thread.currentThread().getId());return  element;})
                 .runWith(Sink.foreach(element -> System.out.println(element)),materializer);
         Thread.sleep(200000);
     }
-
+    
 
 }
