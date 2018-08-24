@@ -12,7 +12,6 @@ import scala.collection.immutable.Map;
 import scala.concurrent.duration.Duration;
 import scala.concurrent.duration.FiniteDuration;
 
-import java.util.Collections;
 import java.util.concurrent.TimeUnit;
 
 

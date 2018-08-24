@@ -22,7 +22,6 @@ public class DemographicEnrichmentService implements Function<MemberMessage, Dem
         this.client =  new OkHttpClient();
     }
 
-
     @Override
     public DemoGraphicInformationMessage apply(MemberMessage param) throws Exception {
 

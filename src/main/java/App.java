@@ -39,7 +39,6 @@ public class App {
     private void run(){
         final ActorSystem system = ActorSystem.create("QuickStart");
 
-
         final Materializer materializer = ActorMaterializer.create(system);
 
         final ConsumerSettings<String, byte[]> consumerSettings = getKafkaConsumerSettings(system);
